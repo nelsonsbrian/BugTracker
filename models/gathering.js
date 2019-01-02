@@ -30,7 +30,7 @@ const gatheringSchema = new mongoose.Schema({
     type: [String]
   },
   comments: {
-    type: [String]
+    type: []
   }
 })
 

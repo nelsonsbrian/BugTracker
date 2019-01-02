@@ -8,6 +8,19 @@ router.get('/', async(req, res) => {
   res.send(gatherings);
 });
 
+router.get('/:id', async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).send('Invalid ID to get.');
+  }
+
+  const gathering = await Gathering.findById(req.params.id);
+
+  if (!gathering) return res.status(404).send('The gathering with the given ID was not found');
+
+  res.send(gathering);
+});
+
+
 router.post('/', async (req,res) => {
   const {error} = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);

@@ -10,6 +10,7 @@ const gatheringSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    required: true,
     minlength: 1,
     maxlength: 255
   },
@@ -19,7 +20,8 @@ const gatheringSchema = new mongoose.Schema({
     default: Date.now
   },
   dateHosted: {
-    type: Date
+    type: Date,
+    required: true
   },
   meals: {
     type: [String]
@@ -37,6 +39,8 @@ const Gathering = mongoose.model('Gathering', gatheringSchema);
 function validateGathering(gathering) {
   const schema = {
     name: Joi.string().min(5).max(50).required(),
+    description: Joi.string().min(1).max(255).required(),
+    dateHosted: Joi.date().required()
   }
   return Joi.validate(gathering, schema);
 }

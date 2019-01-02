@@ -17,12 +17,21 @@ router.post('/', async (req,res) => {
     description: req.body.description,
     dateCreated:  req.body.dateCreated,
     dateHosted:  req.body.dateHosted,
-    meals:  req.body.meals,
-    attendance:  req.body.attendance,
-    comments:  req.body.comments
   });
   gathering = await gathering.save();
   
+  res.send(gathering);
+});
+
+router.delete('/:id', async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).send('Invalid ID to delete.');
+  }
+
+  const gathering = await Gathering.findByIdAndDelete(req.params.id);
+
+  if (!gathering) return res.status(404).send('The gathering with the given ID was not found');
+
   res.send(gathering);
 });
 

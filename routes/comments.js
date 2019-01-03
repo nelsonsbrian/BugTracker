@@ -25,9 +25,17 @@ router.post('/:gathId', async (req, res) => {
     return res.status(404).send('Invalid gatherer ID to create a comment.');
   }
 
+  let comment = new Comment({
+    user: {
+      name: req.body.user.name,
+      userName: req.body.user.userName
+    },
+    message: req.body.message,
+  });
+
   const gathering = await Gathering.findByIdAndUpdate(req.params.gathId,
     {
-      $push: { comments: req.body.comment }
+      $push: { comments: comment }
     },
     { new: true }
   );

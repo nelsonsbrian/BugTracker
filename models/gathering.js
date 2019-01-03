@@ -24,7 +24,7 @@ const gatheringSchema = new mongoose.Schema({
     required: true
   },
   meals: {
-    type: [String]
+    type: []
   },
   attendance: {
     type: [String]

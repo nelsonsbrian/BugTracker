@@ -17,6 +17,11 @@ class App extends Component {
       })
   }
 
+  addComment(event) {
+    event.preventDefault();
+    console.log(this.refs.comment.value);
+  }
+
   render() {
     return (
       <div className="App">
@@ -33,6 +38,17 @@ class App extends Component {
                 {comment.user.userName}: "{comment.message}"
               </div>
             ))}
+            <form onSubmit={this.addComment}>
+              <input
+                type="text"
+                id="content"
+                placeholder="Add a comment"
+                ref= "comment"
+              />
+              <button className="btn btn-primary" type="submit">
+                Post
+              </button>
+            </form>
 
           </div>
 

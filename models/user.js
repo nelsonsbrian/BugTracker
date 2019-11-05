@@ -29,7 +29,17 @@ const userSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 1024
   },
-  isAdmin: Boolean
+  isAdmin: Boolean,
+  lastLogin: {
+    type: Date,
+    required: true,
+    default: Date.now
+  },
+  role: {
+    type: String,
+    enum: ['Team Member', 'Team Lead', 'Manager']
+  }  
+
 });
 
 userSchema.methods.generateAuthToken = function() { 

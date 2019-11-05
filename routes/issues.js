@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const express = require('express');
-const { Meal, validate } = require('../models/meal');
-const { Gathering } = require('../models/gathering');
+const { Issue, validate } = require('../models/issue');
+const { Project } = require('../models/project');
 const router = express.Router();
 
 router.get('/:gathId', async (req, res) => {
@@ -9,10 +9,10 @@ router.get('/:gathId', async (req, res) => {
     return res.status(404).send('Invalid ID to get.');
   }
 
-  const meals = await Gathering.findById(req.params.gathId).select('meals');
-  if (!meals) return res.status(404).send('The gathering with the given ID was not found');
+  const issues = await Project.findById(req.params.gathId).select('issues');
+  if (!issues) return res.status(404).send('The project with the given ID was not found');
 
-  res.send(meals);
+  res.send(issues);
 });
 
 router.post('/:gathId', async (req, res) => {
@@ -23,21 +23,21 @@ router.post('/:gathId', async (req, res) => {
     return res.status(404).send('Invalid gatherer ID to create a comment.');
   }
 
-  let meal = new Meal({
+  let issue = new Issue({
     name: req.body.name,
     notes: req.body.notes,
   });
 
-  const gathering = await Gathering.findByIdAndUpdate(req.params.gathId,
+  const project = await Project.findByIdAndUpdate(req.params.gathId,
     {
-      $push: { meals: meal }
+      $push: { issues: issue }
     },
     { new: true }
   );
 
-  if (!gathering) return res.status(404).send('The gathering with the given ID was not found');
+  if (!project) return res.status(404).send('The project with the given ID was not found');
 
-  res.send(gathering);
+  res.send(project);
 });
 
 module.exports = router;  

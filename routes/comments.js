@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const express = require('express');
 const { Comment, validate } = require('../models/comment');
-const { Gathering } = require('../models/gathering');
+const { Project } = require('../models/project');
 const router = express.Router();
 
 router.get('/:gathId', async (req, res) => {
@@ -11,8 +11,8 @@ router.get('/:gathId', async (req, res) => {
     return res.status(404).send('Invalid ID to get.');
   }
 
-  const comments = await Gathering.findById(req.params.gathId).select('comments');
-  if (!comments) return res.status(404).send('The gathering with the given ID was not found');
+  const comments = await Project.findById(req.params.gathId).select('comments');
+  if (!comments) return res.status(404).send('The project with the given ID was not found');
 
   res.send(comments);
 });
@@ -33,16 +33,16 @@ router.post('/:gathId', async (req, res) => {
     message: req.body.message,
   });
 
-  const gathering = await Gathering.findByIdAndUpdate(req.params.gathId,
+  const project = await Project.findByIdAndUpdate(req.params.gathId,
     {
       $push: { comments: comment }
     },
     { new: true }
   );
 
-  if (!gathering) return res.status(404).send('The gathering with the given ID was not found');
+  if (!project) return res.status(404).send('The project with the given ID was not found');
 
-  res.send(gathering);
+  res.send(project);
 });
 
 module.exports = router;  

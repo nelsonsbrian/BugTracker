@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
-const gatheringSchema = new mongoose.Schema({
+const projectSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -16,34 +16,31 @@ const gatheringSchema = new mongoose.Schema({
   },
   dateCreated: {
     type: Date,
-    required: true,
+    // required: true,
     default: Date.now
   },
-  dateHosted: {
-    type: Date,
-    required: true
-  },
-  meals: {
+  team: {
     type: []
   },
-  attendance: {
-    type: [String]
+  issues: {
+    type: []
   },
   comments: {
     type: []
-  }
+  },
+  active: Boolean
 })
 
-const Gathering = mongoose.model('Gathering', gatheringSchema);
+const Project = mongoose.model('Project', projectSchema);
 
-function validateGathering(gathering) {
+function validateProject(project) {
   const schema = {
     name: Joi.string().min(5).max(50).required(),
     description: Joi.string().min(1).max(255).required(),
-    dateHosted: Joi.date().required()
+    // dateHosted: Joi.date().required()
   }
-  return Joi.validate(gathering, schema);
+  return Joi.validate(project, schema);
 }
 
-exports.Gathering = Gathering;
-exports.validate = validateGathering;
+exports.Project = Project;
+exports.validate = validateProject;

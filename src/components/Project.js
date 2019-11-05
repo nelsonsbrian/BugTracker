@@ -5,6 +5,7 @@ import Axios from 'axios';
 const Project = (props) => {
   const projId = props.match.params.projectId;
   const [currentProject, setCurrentProject] = useState([]);
+  const [loadingProject, setLoadingProject] = useState(true);
 
   useEffect(() => {
     getProject();
@@ -15,13 +16,35 @@ const Project = (props) => {
       .then(json => {
         console.log(json.data);
         setCurrentProject(json.data);
+        setLoadingProject(false);
       })
   }
 
+  const renderProject = () => {
+    return (
+      <div>
+        <h1>{currentProject.name}</h1>
+        <p>{currentProject.description}</p>
+        <h3>Team Members:</h3>
+        {currentProject.team.length ?
+          <ul> {currentProject.team.map(member => (
+            <li key={member.id}>{member.name}</li>
+          ))}</ul> :
+          <div>No Team Members on Project...</div>
+        }
+      </div>
+    )
+  }
+
+  const AddTeamMember = () => {
+    
+  }
+  
+
   return (
     <div>
-      {projId}
-      Woot
+      {loadingProject ? <h2>Loading Project....</h2> : renderProject()}
+      {/* {currentProject && renderProject()} */}
     </div>
   );
 }

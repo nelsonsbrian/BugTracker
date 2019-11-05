@@ -21,7 +21,7 @@ const ProjectList = () => {
 
   const addComment = (event) => {
     event.preventDefault();
-    console.log(this.refs.comment.value);
+    // console.log(this.refs.comment.value);
 
   }
 

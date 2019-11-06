@@ -65,24 +65,9 @@ return (
             <h4>Project: {project.name}</h4>
             <p>{project.description}</p>
             <h6>Date Created: {project.dateCreated}</h6>
-            <h6>Team:</h6>
-            {project.team.map(member => (
-              <div key={member._id}>
-                {member.user.name}: "{member.message}"
-              </div>
-            ))}
-            <h6>Issues: {project.issues}</h6>
-            {project.issues.map(issues => (
-              <div key={issues._id}>
-                {issues.user.userName}: "{issues.message}"
-              </div>
-            ))}
-            <p>Comments</p>
-            {project.comments.map(comment => (
-              <div key={comment._id}>
-                {comment.user.userName}: "{comment.message}"
-              </div>
-            ))}
+            <h6>Team: {project.team.length}</h6> 
+            <h6>Issues: {project.issues.length}</h6>
+            <p>Comments: {project.comments.length}</p>
           </div>
           <hr />
         </Link>

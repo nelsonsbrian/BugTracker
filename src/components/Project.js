@@ -48,7 +48,7 @@ const Project = (props) => {
         {generateAreaDropdown()}
         {currentProject.team.length ?
           <ul> {currentProject.team.map(member => (
-            <li key={member.id}>{member.name}</li>
+            <li key={member.userName}>{member.name}</li>
           ))}</ul> :
           <div>No Team Members on Project...</div>
         }

@@ -50,9 +50,25 @@ router.put('/:id', async (req, res) => {
     },
     { new: true });
 
-    if (!project) return res.status(404).send('The project with the given ID was not found');
+  if (!project) return res.status(404).send('The project with the given ID was not found');
 
-    res.send(project);    
+  res.send(project);
+});
+
+router.post('/:id/user/', async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).send('Invalid ID to update.');
+  }
+  // TODO:  Check to see if user is on team already....
+  const project = await Project.findByIdAndUpdate(req.params.id,
+    {
+      $push: { team: req.body.user },
+    },
+    { new: true });
+
+  if (!project) return res.status(404).send('The project with the given ID was not found');
+
+  res.send(project);
 });
 
 router.delete('/:id', async (req, res) => {

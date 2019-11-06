@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const express = require('express');
 const { User, validate } = require('../models/user');
+const { Project } = require('../models/project');
 const router = express.Router();
 
 router.get('/me', async (req, res) => {
@@ -12,13 +13,50 @@ router.get('/me', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  //TODO: fix function once AUTH / Middleware logic is in...
-  const user = await User.find().select('-password').sort('name');
+  const user = await User.find().select('_id name role userName').sort('name');
+  res.send(user);
+});
+
+router.get('/:projectId/team', async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.projectId)) {
+    return res.status(404).send('Invalid ID to get.');
+  }
+  const project = await Project.findById(req.params.projectId);
+  
+  if (!project) return res.status(404).send('The project with the given ID was not found');
+
+  const team = project.team;
+  if (!team.length)  {
+    return res.send([]);
+  }
+  const user = await User.find().where('_id').in(team).select('_id name role userName').sort('name').exec();
+
+  if (!user) return res.status(404).send('The project with the given ID was not found');
+
+  res.send(user);
+});
+
+router.get('/:projectId/other', async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.projectId)) {
+    return res.status(404).send('Invalid ID to get.');
+  }
+  const project = await Project.findById(req.params.projectId);
+  
+  if (!project) return res.status(404).send('The project with the given ID was not found');
+
+  const team = project.team;
+  if (!team.length)  {
+    return res.send([]);
+  }
+  const user = await User.find().where('_id').nin(team).select('_id name role userName').sort('name').exec();
+
+  if (!user) return res.status(404).send('The project with the given ID was not found');
+
   res.send(user);
 });
 
 router.post('/', async (req, res) => {
-  const { error } = validate(req.body); 
+  const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   let user = await User.findOne({ email: req.body.email });

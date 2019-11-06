@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import Button from 'react-bootstrap/Button';
 
 const Project = (props) => {
   const projId = props.match.params.projectId;
   const [currentProject, setCurrentProject] = useState([]);
   const [loadingProject, setLoadingProject] = useState(true);
   const [otherUsers, setOtherUsers] = useState([]);
-  const [addUser, setAddUser] = useState(null)
+  const [addUser, setAddUser] = useState(null);
+  const [team, setTeam] = useState([]);
 
   useEffect(() => {
     getProject();
   }, [])
-
 
   const getProject = () => {
     axios.get(`http://localhost:3000/api/projects/${projId}`)
       .then(json => {
         console.log(json.data);
         setCurrentProject(json.data);
-        getOtherUsers(json.data);
+        getOtherUsers();
+        getProjectUsers();
         setLoadingProject(false);
       })
       .catch(err => {
@@ -27,12 +28,22 @@ const Project = (props) => {
       })
   }
 
-  const getOtherUsers = (proj) => {
-    // if (!currentProject.team.length) { return };
-    axios.get(`http://localhost:3000/api/users/`)
+  const getProjectUsers = () => {
+    axios.get(`http://localhost:3000/api/users/${projId}/team`)
       .then(json => {
-        const others = json.data.filter(u => !proj.team.find(t => t.userName === u.userName));
-        setOtherUsers(others);
+        console.log('team', json.data);
+        setTeam(json.data);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
+  const getOtherUsers = () => {
+    axios.get(`http://localhost:3000/api/users/${projId}/other`)
+      .then(json => {
+        console.log('not on team', json.data);
+        setOtherUsers(json.data);
       })
       .catch(err => {
         console.log(err);
@@ -45,10 +56,19 @@ const Project = (props) => {
         <h1>{currentProject.name}</h1>
         <p>{currentProject.description}</p>
         <h3>Team Members:</h3>
-        {generateAreaDropdown()}
-        {currentProject.team.length ?
-          <ul> {currentProject.team.map(member => (
-            <li key={member.userName}>{member.name}</li>
+        {addUserDropdown()}
+        <Button onClick={handleAddUser}>Add to Team</Button>
+        {team.length ?
+          <ul> {team.map((member, index) => (
+            <li key={member.userName}>
+              <div className={'mt-1'}>
+                {member.name}
+                <Button onClick={() => handleRemoveUser(member._id)}
+                  variant={'danger'}
+                  className={'ml-2'}
+                >Remove</Button>
+              </div>
+            </li>
           ))}</ul> :
           <div>No Team Members on Project...</div>
         }
@@ -56,16 +76,17 @@ const Project = (props) => {
     )
   }
 
-  const generateAreaDropdown = () => {
+  const addUserDropdown = () => {
     let areaDropdownList = [];
+    console.log(otherUsers);
     for (let user of otherUsers) {
-      areaDropdownList.push(<option key={user.userName} value={user.userName}>{user.userName}</option>)
+      areaDropdownList.push(<option key={user.userName} value={user._id}>{user.userName}</option>)
     }
     return (
       <select
         id="areaDropdown"
         className="custom-select"
-        value={(addUser) ? addUser : ""}
+        value={(addUser) ? addUser.userName : ""}
         onChange={(e) => setAddUser(e.target.value)}
       >
         <option value="" disabled hidden>Add Team Member</option>
@@ -74,10 +95,37 @@ const Project = (props) => {
     );
   }
 
+  const handleAddUser = () => {
+    if (!addUser) { return };
+    axios.post(`http://localhost:3000/api/projects/${projId}/user/add`, { addUser })
+      .then(json => {
+        console.log(`added ${addUser}`);
+        setCurrentProject(json.data);
+        setAddUser(null);
+        getOtherUsers();
+        getProjectUsers();
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
+  const handleRemoveUser = (userId) => {
+    axios.put(`http://localhost:3000/api/projects/${projId}/user/remove`, { userId })
+      .then(json => {
+        console.log(`removed ${userId}`);
+        setCurrentProject(json.data);
+        getOtherUsers();
+        getProjectUsers();
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
   return (
     <div>
       {loadingProject ? <h2>Loading Project....</h2> : renderProject()}
-      {/* {currentProject && renderProject()} */}
     </div>
   );
 }

@@ -29,7 +29,10 @@ const userSchema = new mongoose.Schema({
     minlength: 5,
     maxlength: 1024
   },
-  isAdmin: Boolean,
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
   lastLogin: {
     type: Date,
     required: true,
@@ -37,7 +40,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['Team Member', 'Team Lead', 'Manager']
+    enum: ['Team Member', 'Team Lead', 'Manager'],
+    default: 'Team Member'
   }  
 
 });

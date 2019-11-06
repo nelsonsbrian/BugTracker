@@ -11,6 +11,12 @@ router.get('/me', async (req, res) => {
   res.send(user);
 });
 
+router.get('/', async (req, res) => {
+  //TODO: fix function once AUTH / Middleware logic is in...
+  const user = await User.find().select('-password').sort('name');
+  res.send(user);
+});
+
 router.post('/', async (req, res) => {
   const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);

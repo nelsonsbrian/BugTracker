@@ -19,21 +19,19 @@ const onRedirectCallback = appState => {
   );
 };
 
+// ReactDOM.render(
 //   <Auth0Provider
 //     domain={config.domain}
 //     client_id={config.clientId}
 //     redirect_uri={window.location.origin}
 //     onRedirectCallback={onRedirectCallback}
 // >
+//     <App />
 //   </Auth0Provider>,
-ReactDOM.render(
-  <h1>Hello, world!</h1>,
-  document.getElementById('root')
-);
-
-// ReactDOM.render(
-//     <App />,
 //   document.getElementById("root")
 // );
 
-// serviceWorker.unregister();
+ReactDOM.render(
+    <App />,
+  document.getElementById("root")
+);

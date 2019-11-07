@@ -1,23 +1,6 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
-const SimpleUser = new mongoose.Schema({
-  type: new mongoose.Schema({
-    userId: {
-      type: String,
-      required: true,
-      minlength: 5,
-      maxlength: 50
-    },
-    userName: {
-      type: String,
-      required: true,
-      minlength: 5,
-      maxlength: 15
-    },
-  })
-});
-
 const issueSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -27,12 +10,11 @@ const issueSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
     minlength: 1,
     maxlength: 255
   },
-  createdBy: SimpleUser,
-  assignedTo: [SimpleUser],
+  createdBy: mongoose.Schema.Types.ObjectId,
+  assignedTo: [mongoose.Schema.Types.ObjectId],
   dateCreated: {
     type: Date,
     required: true,

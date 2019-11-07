@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
-import Axios from 'axios';
+import axios from 'axios';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -16,7 +16,7 @@ const ProjectList = () => {
   }, [])
 
   const getProjects = () => {
-    Axios.get('http://localhost:3000/api/users')
+    axios.get('http://localhost:3000/api/users')
       .then(json => {
         console.log(json.data);
         setData(json.data);
@@ -32,7 +32,6 @@ const ProjectList = () => {
 
   const handleSubmit = event => {
     const form = event.currentTarget;
-    console.log(form.checkValidity());
 
     setValidated(true);
     event.preventDefault();
@@ -44,11 +43,12 @@ const ProjectList = () => {
   };
 
   const addUser = () => {
-    Axios.post('http://localhost:3000/api/users', { name, userName: username, password, email })
+    axios.post('http://localhost:3000/api/users', { name, userName: username, password, email })
       .then(res => {
         console.log('added user');
         setUsername('')
         setPassword('');
+        setName('');
         setEmail('');
         setValidated(false);
         getProjects();
